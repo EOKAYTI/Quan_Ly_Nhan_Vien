@@ -51,7 +51,7 @@ function getValueForm() {
 ----------------------------------------------
  */
 // Nhấn nút enter thay vì click vào nút, lấy id của form
-document.getElementById("formQLNV").onsubmit = function (event) {
+document.getElementById("btnThemNV").onclick = function (event) {
   console.log("đã click");
   // prevendDefault dùng để ngăn chặn sự kiện reload
   event.preventDefault();
@@ -65,8 +65,6 @@ document.getElementById("formQLNV").onsubmit = function (event) {
     // hàm render có thể gọi ở bất kỳ đâu vì có cơ chế hosting
     renderDataNhanVien();
     // trỏ tới thẻ form đang chạy unsubmit
-    // xóa các giá trị người dùng nhập sau khi submit (reset lại các ô input)
-    event.target.reset();
   }
 };
 
@@ -94,7 +92,7 @@ function renderDataNhanVien(arr = arrNhanVien) {
                 <td>${newNhanVien.xepLoai()}</td>
                 <td>
                     <button class="btn btn-warning">Sửa</button>
-                     <button class="btn btn-danger mt-1">Xóa</button>
+                     <button onclick="deleteNhanVien('${tknv}')" class="btn btn-danger mt-1">Xóa</button>
                 </td>
             </tr>
         `;
@@ -128,7 +126,7 @@ function getLocalStorage(key) {
 --------------GET INFO NHÂN VIÊN--------------
 ----------------------------------------------
  */
-// B1. gắn function getinfoSinhVien vao nút sửa
+// B1. gắn function getinfoNhanVien vao nút sửa
 // B2. thực hiện tìm kiếm sinh viên trong mảng
 // B3. thực hiện đưa dữ liệu viết lên input trong form cho người dùng chỉnh sửa
 // B4. Ngăn chặn người dùng chỉnh sửa tknv (disabled, read only)
@@ -178,9 +176,9 @@ document.getElementById("btnCapNhat").onclick = function () {
   console.log("ĐÃ CLICK CẬP NHẬT");
   let nhanVien = getValueForm();
   if (nhanVien) {
-    let index = arrNhanVien.findIndex((item, i) => item.tknv == sinhVien.tknv);
+    let index = arrNhanVien.findIndex((item, i) => item.tknv == nhanVien.tknv);
     if (index != -1) {
-      arrNhanVien[index] = sinhVien;
+      arrNhanVien[index] = nhanVien;
       renderDataNhanVien();
       setLocalStorage("arrNhanVien", arrNhanVien);
       document.getElementById("tknv").readOnly = false;
