@@ -235,10 +235,12 @@
                     name="tk"
                     id="tknv"
                     class="form-control input-sm"
+                    data-validation="minmax"
+                    data-min="4"
+                    data-max="6"
                     placeholder="Tài khoản"
                   />
                 </div>
-
                 <span class="sp-thongbao" id="tbTKNV"></span>
               </div>
 
@@ -254,6 +256,7 @@
                     name="name"
                     id="name"
                     class="form-control input-sm"
+                    data-validation="text"
                     placeholder="Họ và tên"
                   />
                 </div>
@@ -272,6 +275,7 @@
                     name="email"
                     id="email"
                     class="form-control input-sm"
+                    data-validation="email"
                     placeholder="Email"
                   />
                 </div>
@@ -291,6 +295,9 @@
                     name="password"
                     id="password"
                     class="form-control input-sm"
+                    data-validation="minmax,password"
+                    data-min="6"
+                    data-max="10"
                     placeholder="Mật khẩu"
                   />
                 </div>
@@ -328,6 +335,9 @@
                     name="luongCB"
                     id="luongCB"
                     class="form-control input-sm"
+                    data-validation="salary"
+                    data-min="1000000"
+                    data-max="20000000"
                     placeholder="Lương cơ bản"
                   />
                 </div>
@@ -340,14 +350,17 @@
                       ><i class="fa fa-briefcase"></i
                     ></span>
                   </div>
-                  <select class="form-control" id="chucvu">
+                  <select
+                    class="form-control"
+                    id="chucvu"
+                    data-validation="position"
+                  >
                     <option>Chọn chức vụ</option>
                     <option value="Giám đốc">Giám đốc</option>
                     <option value="Trưởng phòng">Trưởng phòng</option>
                     <option value="Nhân viên">Nhân viên</option>
                   </select>
                 </div>
-
                 <span class="sp-thongbao" id="tbChucVu"></span>
               </div>
               <div class="form-group">
@@ -362,8 +375,11 @@
                     name="gioLam"
                     id="gioLam"
                     class="form-control input-sm"
+                    data-validation="workingHours"
+                    data-min="80"
+                    data-max="200"
                     placeholder="Giờ làm"
-                  />S
+                  />
                 </div>
                 <span class="sp-thongbao" id="tbGiolam"></span>
               </div>

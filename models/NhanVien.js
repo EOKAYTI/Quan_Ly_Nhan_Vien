@@ -20,14 +20,13 @@ class NhanVien {
     }
     return this.tongLuong;
   };
-
   xepLoai = function () {
     if (this.chucvu == "Nhân viên") {
       if (this.gioLam >= 192) {
         this.xepLoaiNV = "Xuất sắc";
-      } else if (176 >= this.gioLam < 192) {
+      } else if (this.gioLam >= 176 && this.gioLam < 192) {
         this.xepLoaiNV = "Giỏi";
-      } else if (160 >= this.gioLam < 176) {
+      } else if (this.gioLam >= 160 && this.gioLam < 176) {
         this.xepLoaiNV = "Khá";
       } else if (this.gioLam < 160) {
         this.xepLoaiNV = "Trung bình";

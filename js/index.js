@@ -6,16 +6,12 @@ let arrNhanVien = [];
 ------------------------------------------
  */
 function getValueForm() {
-  console.log("vào get value");
-  let arrField = document.querySelectorAll("#formQLNV input,#formQLNV select");
+  let arrField = document.querySelectorAll("#formQLNV input, #formQLNV select");
   let nhanVien = new NhanVien();
-
-  // tạo một biến cờ hiệu để check trường hợp khi nào trả về đối tượng nhân viên
   let flag = true;
 
   for (let field of arrField) {
-    // let value = field.value; // destructuring
-    let { value, id } = field; // field = mã sinh viên ==> tknv
+    let { value, id } = field;
     nhanVien[id] = value;
 
     // Truy cập tới thẻ cha gần nhất của input
@@ -24,26 +20,101 @@ function getValueForm() {
     if (!checkEmptyValue(theThongBao, value)) {
       flag = false;
     } else {
-      // dữ liệu không bị rỗng
-      // if (id == "txtPass" && !checkMinMaxValue(theThongBao, value, 6, 10)) {
-      //   flag = false;
-      // }
-      // truy xuất tới các thuộc tính data-validation
-      let dataValue = field.getAttribute("data-validation"); // undifinded | email | minmax
+      let dataValue = field.getAttribute("data-validation").split(","); // Tách các thuộc tính
       let dataMin = field.getAttribute("data-min") * 1;
       let dataMax = field.getAttribute("data-max") * 1;
-      if (dataValue == "email" && !checkEmailValue(theThongBao, value)) {
-        flag = false;
-      } else if (
-        dataValue == "minMax" &&
-        !checkMinMaxValue(theThongBao, value, dataMin, dataMax)
-      ) {
-        flag = false;
+
+      // Duyệt qua từng thuộc tính validation
+      for (let validation of dataValue) {
+        switch (
+          validation.trim() // Sử dụng trim để loại bỏ khoảng trắng
+        ) {
+          case "email":
+            if (!checkEmailValue(theThongBao, value)) {
+              flag = false;
+            }
+            break;
+          case "minmax":
+            if (!checkMinMaxValue(theThongBao, value, dataMin, dataMax)) {
+              flag = false;
+            }
+            break;
+          case "text":
+            if (!/^[a-zA-Z\s]+$/.test(value)) {
+              theThongBao.innerHTML = "Tên nhân viên phải là chữ";
+              flag = false;
+            }
+            break;
+          case "date":
+            if (!checkDateValue(theThongBao, value)) {
+              flag = false;
+            }
+            break;
+          case "salary":
+            if (!checkSalaryValue(theThongBao, value, dataMin, dataMax)) {
+              flag = false;
+            }
+            break;
+          case "position":
+            if (!checkPositionValue(theThongBao, value)) {
+              flag = false;
+            }
+            break;
+          case "workingHours":
+            if (!checkWorkingHoursValue(theThongBao, value, dataMin, dataMax)) {
+              flag = false;
+            }
+            break;
+          case "password": // Kiểm tra mật khẩu
+            if (!checkPasswordValue(theThongBao, value)) {
+              flag = false;
+            }
+            break;
+        }
       }
     }
   }
   return flag ? nhanVien : null;
 }
+
+// function getValueForm() {
+//   console.log("vào get value");
+//   let arrField = document.querySelectorAll("#formQLNV input,#formQLNV select");
+//   let nhanVien = new NhanVien();
+
+//   // tạo một biến cờ hiệu để check trường hợp khi nào trả về đối tượng nhân viên
+//   let flag = true;
+
+//   for (let field of arrField) {
+//     // let value = field.value; // destructuring
+//     let { value, id } = field; // field = mã sinh viên ==> tknv
+//     nhanVien[id] = value;
+
+//     // Truy cập tới thẻ cha gần nhất của input
+//     let theThongBao = field.parentElement.querySelector("span");
+
+//     if (!checkEmptyValue(theThongBao, value)) {
+//       flag = false;
+//     } else {
+//       // dữ liệu không bị rỗng
+//       // if (id == "txtPass" && !checkMinMaxValue(theThongBao, value, 6, 10)) {
+//       //   flag = false;
+//       // }
+//       // truy xuất tới các thuộc tính data-validation
+//       let dataValue = field.getAttribute("data-validation"); // undifinded | email | minmax
+//       let dataMin = field.getAttribute("data-min") * 1;
+//       let dataMax = field.getAttribute("data-max") * 1;
+//       if (dataValue == "email" && !checkEmailValue(theThongBao, value)) {
+//         flag = false;
+//       } else if (
+//         dataValue == "minMax" && !checkMinMaxValue(theThongBao, value, dataMin, dataMax)
+//       ) {
+//         flag = false;
+//       }
+//     }
+//   }
+//   return flag ? nhanVien : null;
+// }
 
 /* 
 ----------------------------------------------
@@ -52,7 +123,6 @@ function getValueForm() {
  */
 // Nhấn nút enter thay vì click vào nút, lấy id của form
 document.getElementById("btnThemNV").onclick = function (event) {
-  console.log("đã click");
   // prevendDefault dùng để ngăn chặn sự kiện reload
   event.preventDefault();
 
@@ -110,8 +180,12 @@ window.onload = function () {
   }
 };
 
-// --------------- local storage ----------------
-// tạo ra một function sẽ giúp đưa bất kĩ dữ liệu nào xuống local storage lưu trữ
+/* 
+-------------------------------------------
+---------------LOCAL STORAGE---------------
+-------------------------------------------
+ */
+// tạo ra một function sẽ giúp đưa bất kỳ dữ liệu nào xuống local storage lưu trữ
 function setLocalStorage(key, data) {
   let dataString = JSON.stringify(data);
   localStorage.setItem(key, dataString);
@@ -127,10 +201,6 @@ function getLocalStorage(key) {
 --------------GET INFO NHÂN VIÊN--------------
 ----------------------------------------------
  */
-// B1. gắn function getinfoNhanVien vao nút sửa
-// B2. thực hiện tìm kiếm sinh viên trong mảng
-// B3. thực hiện đưa dữ liệu viết lên input trong form cho người dùng chỉnh sửa
-// B4. Ngăn chặn người dùng chỉnh sửa tknv (disabled, read only)
 function getInfoNhanVien(tknv) {
   let nhanVien = arrNhanVien.find((item, index) => item.tknv == tknv);
   if (nhanVien) {
@@ -166,14 +236,11 @@ function deleteNhanVien(tknv) {
   // thao tác xóa nhân viên cập nhật dữ liệu
 }
 
-// chức năng cập nhật nhân viên
-// B1. DOM tới nút button cập nhật và tạo một sự kiện click
-// B2. Xử lý lấy dữ liệu người dùng đã cập nhật trên form
-// B3. Tìm kiếm tới vị trí của phần tử được cập nhật
-// B4. Thay thế dữ liệu mới vào vị trí của phần tử được cập nhật
-// B5. Thực hiện chạy lại hàm render và cập nhật xuống local storage
-// B6. CLear toàn bộ dữ liệu của form và tắt readOnly của input
-
+/* 
+-------------------------------------------
+-------------CẬP NHẬT NHÂN VIÊN------------
+-------------------------------------------
+ */
 document.getElementById("btnCapNhat").onclick = function () {
   console.log("ĐÃ CLICK CẬP NHẬT");
   let nhanVien = getValueForm();
@@ -189,18 +256,30 @@ document.getElementById("btnCapNhat").onclick = function () {
   }
 };
 
-// ------------- tìm kiếm nhân viên --------------
+/* 
+-------------------------------------------
+----------TÌM NHÂN VIÊN THEO LOẠI----------
+-------------------------------------------
+ */
 document.getElementById("searchName").oninput = function (event) {
-  console.log("ĐÃ CLICK tìm kiếm");
-
+  // Lấy từ khóa tìm kiếm và chuẩn hóa nó
   let keyWord = event.target.value.trim().toLowerCase();
   let newKeyWord = removeVietnameseTones(keyWord);
-  console.log(newKeyWord);
+
+  // Lọc nhân viên dựa trên loại nhân viên
   let arrSearch = arrNhanVien.filter((item, index) => {
-    // item.txtTenSV ="Phát" newKeyWord = phat
-    // item.txtTenSV.includes(newKeyWord) ==> true
-    let newTenSV = removeVietnameseTones(item.tknv.trim().toLowerCase());
-    return newTenSV.includes(newKeyWord);
+    // Chuyển đổi đối tượng thành instance của NhanVien nếu chưa phải
+    let nhanVien = new NhanVien();
+    Object.assign(nhanVien, item);
+
+    // Gọi hàm xepLoai() để lấy loại nhân viên
+    let loaiNV = nhanVien.xepLoai().trim().toLowerCase();
+    let newLoaiNV = removeVietnameseTones(loaiNV);
+
+    // Kiểm tra xem loại nhân viên có chứa từ khóa tìm kiếm hay không
+    return newLoaiNV.includes(newKeyWord);
   });
+
+  // Hiển thị kết quả sau khi tìm kiếm
   renderDataNhanVien(arrSearch);
 };
