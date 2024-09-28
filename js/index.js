@@ -17,59 +17,68 @@ function getValueForm() {
     // Truy cập tới thẻ cha gần nhất của input
     let theThongBao = field.parentElement.querySelector("span");
 
+    // Kiểm tra dữ liệu rỗng
     if (!checkEmptyValue(theThongBao, value)) {
       flag = false;
     } else {
-      let dataValue = field.getAttribute("data-validation").split(","); // Tách các thuộc tính
-      let dataMin = field.getAttribute("data-min") * 1;
-      let dataMax = field.getAttribute("data-max") * 1;
+      // Lấy thuộc tính data-validation và tách thành mảng các thuộc tính
+      let dataValue = field.getAttribute("data-validation");
 
-      // Duyệt qua từng thuộc tính validation
-      for (let validation of dataValue) {
-        switch (
-          validation.trim() // Sử dụng trim để loại bỏ khoảng trắng
-        ) {
-          case "email":
-            if (!checkEmailValue(theThongBao, value)) {
-              flag = false;
-            }
-            break;
-          case "minmax":
-            if (!checkMinMaxValue(theThongBao, value, dataMin, dataMax)) {
-              flag = false;
-            }
-            break;
-          case "text":
-            if (!/^[a-zA-Z\s]+$/.test(value)) {
-              theThongBao.innerHTML = "Tên nhân viên phải là chữ";
-              flag = false;
-            }
-            break;
-          case "date":
-            if (!checkDateValue(theThongBao, value)) {
-              flag = false;
-            }
-            break;
-          case "salary":
-            if (!checkSalaryValue(theThongBao, value, dataMin, dataMax)) {
-              flag = false;
-            }
-            break;
-          case "position":
-            if (!checkPositionValue(theThongBao, value)) {
-              flag = false;
-            }
-            break;
-          case "workingHours":
-            if (!checkWorkingHoursValue(theThongBao, value, dataMin, dataMax)) {
-              flag = false;
-            }
-            break;
-          case "password": // Kiểm tra mật khẩu
-            if (!checkPasswordValue(theThongBao, value)) {
-              flag = false;
-            }
-            break;
+      if (dataValue) {
+        let validations = dataValue.split(","); // Tách các thuộc tính validation bằng dấu phẩy
+
+        let dataMin = field.getAttribute("data-min") * 1;
+        let dataMax = field.getAttribute("data-max") * 1;
+
+        // Duyệt qua từng thuộc tính validation
+        for (let validation of validations) {
+          switch (
+            validation.trim() // Loại bỏ khoảng trắng dư thừa
+          ) {
+            case "email":
+              if (!checkEmailValue(theThongBao, value)) {
+                flag = false;
+              }
+              break;
+            case "minmax":
+              if (!checkMinMaxValue(theThongBao, value, dataMin, dataMax)) {
+                flag = false;
+              }
+              break;
+            case "text":
+              if (!/^[a-zA-Z\s]+$/.test(value)) {
+                theThongBao.innerHTML = "Tên nhân viên phải là chữ";
+                flag = false;
+              }
+              break;
+            case "date":
+              if (!checkDateValue(theThongBao, value)) {
+                flag = false;
+              }
+              break;
+            case "salary":
+              if (!checkSalaryValue(theThongBao, value, dataMin, dataMax)) {
+                flag = false;
+              }
+              break;
+            case "position":
+              if (!checkPositionValue(theThongBao, value)) {
+                flag = false;
+              }
+              break;
+            case "workingHours":
+              if (
+                !checkWorkingHoursValue(theThongBao, value, dataMin, dataMax)
+              ) {
+                flag = false;
+              }
+              break;
+            case "password": // Kiểm tra mật khẩu
+              if (!checkPasswordValue(theThongBao, value)) {
+                flag = false;
+              }
+              break;
+          }
         }
       }
     }
