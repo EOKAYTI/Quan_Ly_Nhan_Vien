@@ -11,7 +11,7 @@ class NhanVien {
   xepLoaiNV = "";
 
   tinhTongLuong = function () {
-    if (this.chucvu == "Sếp") {
+    if (this.chucvu == "Giám đốc") {
       this.tongLuong = this.luongCB * 3;
     } else if (this.chucvu == "Trưởng phòng") {
       this.tongLuong = this.luongCB * 2;

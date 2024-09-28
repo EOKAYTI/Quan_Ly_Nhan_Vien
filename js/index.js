@@ -91,7 +91,8 @@ function renderDataNhanVien(arr = arrNhanVien) {
                 <td>${newNhanVien.tinhTongLuong()}</td>
                 <td>${newNhanVien.xepLoai()}</td>
                 <td>
-                    <button class="btn btn-warning">Sửa</button>
+                    <button onclick="getInfoNhanVien('${tknv}')" data-toggle="modal"
+                    data-target="#myModal" class="btn btn-warning">Sửa</button>
                      <button onclick="deleteNhanVien('${tknv}')" class="btn btn-danger mt-1">Xóa</button>
                 </td>
             </tr>
@@ -139,12 +140,13 @@ function getInfoNhanVien(tknv) {
     );
     for (let field of arrField) {
       // field đại diện cho các select input tìm kiếm được trong form
-      field.value = sinhVien[field.id];
+      field.value = nhanVien[field.id];
       if (field.id == "tknv") {
         field.readOnly = true;
       }
     }
   }
+  renderDataNhanVien();
 }
 
 /* 
@@ -197,7 +199,7 @@ document.getElementById("searchName").oninput = function (event) {
   let arrSearch = arrNhanVien.filter((item, index) => {
     // item.txtTenSV ="Phát" newKeyWord = phat
     // item.txtTenSV.includes(newKeyWord) ==> true
-    let newTenSV = removeVietnameseTones(item.txtTenSV.trim().toLowerCase());
+    let newTenSV = removeVietnameseTones(item.tknv.trim().toLowerCase());
     return newTenSV.includes(newKeyWord);
   });
   renderDataNhanVien(arrSearch);
