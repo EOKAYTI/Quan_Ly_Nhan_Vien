@@ -15,7 +15,9 @@ function getValueForm() {
     nhanVien[id] = value;
 
     // Truy cập tới thẻ cha gần nhất của input
-    let theThongBao = field.parentElement.querySelector("span");
+    let theThongBao =
+      field.parentElement.parentElement.querySelector("span.sp-thongbao");
+    // let theThongBao = field.parentElement.querySelector("span");
 
     // Kiểm tra dữ liệu rỗng
     if (!checkEmptyValue(theThongBao, value)) {
